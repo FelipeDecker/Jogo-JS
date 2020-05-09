@@ -19,7 +19,7 @@
         <script>
             //variaveis do jogo
             var canvas, ctx, ALTURA, LARGURA
-            var frames = 0 
+            var frames = 0, maxPulos = 3
             var chao = {
                 y: 550,
                 altura: 50,
@@ -40,6 +40,7 @@
                 gravidade: 1.5,
                 velocidade: 0,
                 forcaDoPulo: 15,
+                qtdPulos: 0,
 
                 atualiza: function(){
                     this.velocidade += this.gravidade
@@ -51,7 +52,10 @@
                 },
 
                 pula: function(){
-                    this.velocidade = -this.forcaDoPulo
+                    if (this.qtdPulos < maxPulos) {
+                        this.velocidade = -this.forcaDoPulo
+                        this.qtdPulos ++
+                    }
                 },
 
                 desenha: function(){
