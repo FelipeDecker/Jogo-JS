@@ -19,7 +19,8 @@
         <script>
             //variaveis do jogo
             var canvas, ctx, ALTURA, LARGURA
-            var frames = 0, maxPulos = 3
+            var frames = 0, maxPulos = 3, velocidade = 6
+
             var chao = {
                 y: 550,
                 altura: 50,
@@ -68,18 +69,35 @@
             var obstaculos = {
                 obs: [],
                 cores: ["#ffbc1c", "#ff1c1c", "#ff85e1", "#52a7ff", "#78ff5d"],
+                tempoInsere: 0,
 
                 insere: function() {
                     this.obs.push({
-                        x: 200,
-                        largura: 30 + Math.floor(21 * Math.random()),
+                        x: LARGURA,
+                        largura: 25 + Math.floor(21 * Math.random()),
                         altura: 30 + Math.floor(121 * Math.random()),
                         cor: this.cores[Math.floor(5 * Math.random())]
                     })
+                    this.tempoInsere = 35 + Math.floor(20 * Math.random())
                 },
 
                 atualiza: function(){
+                    if (this.tempoInsere == 0){
+                        this.insere()
+                    } else {
+                        this.tempoInsere --
+                    }
 
+                    for (let i = 0, tam = this.obs.length; i < tam; i++) {
+                        var obsAtual = this.obs[i]     
+                        obsAtual.x -= velocidade       
+
+                        if(obsAtual.x <=  - obsAtual.largura) {
+                            this.obs.splice(i, 1)
+                            tam--
+                            i--
+                        }          
+                    }
                 },
 
                 desenha: function(){
@@ -131,6 +149,7 @@
             function atualiza(){
                 frames ++
                 bloco.atualiza()
+                obstaculos.atualiza()
             }
 
             function desenha(){
