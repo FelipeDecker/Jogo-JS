@@ -44,16 +44,16 @@
                 altura: 50,
                 largura: 50,
                 cor: "#ff9239",
-                gravidade: 1.4,
+                gravidade: 1.5,
                 velocidade: 0,
-                forcaDoPulo: 30,
+                forcaDoPulo: 27,
                 qtdPulos: 0,
 
                 atualiza: function(){
                     this.velocidade += this.gravidade
                     this.y += this.velocidade
 
-                    if (this.y > chao.y - this.altura) {
+                    if (this.y > chao.y - this.altura && estadoAtual != estados.perdeu) {
                         this.y = chao.y - this.altura
                         this.qtdPulos = 0
                         this.velocidade = 0
@@ -132,8 +132,9 @@
                     bloco.pula()
                 } else if (estadoAtual == estados.jogar) {
                     estadoAtual = estados.jogando
-                } else if (estadoAtual == estados.perdeu) {
+                } else if (estadoAtual == estados.perdeu && bloco.y >= 2.5 * ALTURA) {
                     estadoAtual = estados.jogar
+                    bloco.velocidade = 0
                     bloco.y = 0
                 }
             }
