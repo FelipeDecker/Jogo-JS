@@ -2,7 +2,7 @@
 <html lang="pt-br">
     <head>
         <meta charset="utf-8">
-        <title> Jogo </title>
+        <title> Jogo - Felipe Decker </title>
         <style>
             canvas {
                 position: absolute;
@@ -19,7 +19,7 @@
         <script>
             //variaveis do jogo
             var canvas, ctx, ALTURA, LARGURA, estadoAtual
-            var frames = 0, maxPulos = 3, velocidade = 6
+            var frames = 0, maxPulos = 3, velocidade = 4
 
             estados = {
                 jogar: 0,
@@ -44,14 +44,15 @@
                 altura: 50,
                 largura: 50,
                 cor: "#ff9239",
-                gravidade: 1.5,
+                gravidade: 1.1,
                 velocidade: 0,
-                forcaDoPulo: 27,
+                forcaDoPulo: 29,
                 qtdPulos: 0,
+                score: 0,
 
                 atualiza: function(){
                     this.velocidade += this.gravidade
-                    this.y += this.velocidade
+                    this.y += this.velocidade / 2
 
                     if (this.y > chao.y - this.altura && estadoAtual != estados.perdeu) {
                         this.y = chao.y - this.altura
@@ -65,6 +66,12 @@
                         this.velocidade = -this.forcaDoPulo
                         this.qtdPulos ++
                     }
+                },
+
+                reset: function(){
+                    this.velocidade = 0
+                    this.y = 0
+                    this.score = 0
                 },
 
                 desenha: function(){
@@ -81,11 +88,12 @@
                 insere: function() {
                     this.obs.push({
                         x: LARGURA,
-                        largura: 25 + Math.floor(21 * Math.random()),
+                        // largura: 25 + Math.floor(21 * Math.random()),
+                        largura: 40,
                         altura: 30 + Math.floor(121 * Math.random()),
                         cor: this.cores[Math.floor(5 * Math.random())]
                     })
-                    this.tempoInsere = 35 + Math.floor(20 * Math.random())
+                    this.tempoInsere = 55 + Math.floor(30 * Math.random())
                 },
 
                 atualiza: function(){
@@ -101,6 +109,10 @@
                         
                         if(bloco.x < obsAtual.x + obsAtual.largura && bloco.x + bloco.largura >= obsAtual.x && bloco.y + bloco.altura >= chao.y - obsAtual.altura){
                             estadoAtual = estados.perdeu 
+                        }
+
+                        if (obsAtual.x == 0) {
+                            bloco.score++
                         }
 
                         if(obsAtual.x <=  - obsAtual.largura) {
@@ -123,19 +135,18 @@
                         ctx.fillRect(obsAtual.x, chao.y - obsAtual.altura, obsAtual.largura, obsAtual.altura)
                     }
                 }
-
-
             }
 
             function clique(event){
+
                 if (estadoAtual == estados.jogando) {
                     bloco.pula()
                 } else if (estadoAtual == estados.jogar) {
                     estadoAtual = estados.jogando
                 } else if (estadoAtual == estados.perdeu && bloco.y >= 2.5 * ALTURA) {
                     estadoAtual = estados.jogar
-                    bloco.velocidade = 0
-                    bloco.y = 0
+                    obstaculos.limpa()
+                    bloco.reset()
                 }
             }
 
@@ -161,8 +172,6 @@
                 roda()
             }
 
-            
-
             function roda(){
                 atualiza()
                 desenha()
@@ -175,8 +184,7 @@
                 bloco.atualiza()
                 if (estadoAtual == estados.jogando) {                
                     obstaculos.atualiza()
-                } else if (estadoAtual == estados.perdeu) {
-                    obstaculos.limpa()
+
                 }
             }
 
@@ -184,12 +192,32 @@
                 ctx.fillStyle = "#80daff"
                 ctx.fillRect(0, 0, LARGURA, ALTURA)
 
+                ctx.fillStyle = "#ffffff"
+                ctx.font = "50px Arial"
+                ctx.fillText(bloco.score, 30, 68)
+
                 if (estadoAtual == estados.jogar) {
                     ctx.fillStyle = "green"
                     ctx.fillRect(LARGURA /2 -50, ALTURA / 2 -50, 100, 100)
                 } else if (estadoAtual == estados.perdeu) {
                     ctx.fillStyle = "red"
                     ctx.fillRect(LARGURA /2 -50, ALTURA / 2 -50, 100, 100)
+
+                    ctx.save()
+                    ctx.translate(LARGURA/2, ALTURA/2)
+                    ctx.fillStyle = "#ffffff"
+
+                    if (bloco.score < 10) {
+                        ctx.fillText(bloco.score, -13, 19)
+                    } else if (bloco.score >= 10 && bloco.score < 100) {
+                        ctx.fillText(bloco.score, -26, 19)
+                    } else if (bloco.score >= 100 && bloco.score < 1000) {
+                        ctx.fillText(bloco.score, -40, 19)
+                    }
+
+
+                    ctx.restore()
+
                 } else if (estadoAtual == estados.jogando) {
                     obstaculos.desenha()
                 }
