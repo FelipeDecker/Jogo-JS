@@ -18,7 +18,7 @@
     <body>
         <script>
             //variaveis do jogo
-            var canvas, ctx, ALTURA, LARGURA, estadoAtual
+            var canvas, ctx, ALTURA, LARGURA, estadoAtual, record
             var frames = 0, maxPulos = 3, velocidade = 4
 
             estados = {
@@ -71,6 +71,12 @@
                 reset: function(){
                     this.velocidade = 0
                     this.y = 0
+
+                    if (this.score > record){
+                        localStorage.setItem("record", this.score)
+                        record = this.score
+                    }
+
                     this.score = 0
                 },
 
@@ -168,7 +174,7 @@
                 document.body.appendChild(canvas)
                 document.addEventListener("mousedown", clique)
                 estadoAtual = estados.jogar
-
+                record = localStorage.getItem("record") == null ? 0 : null
                 roda()
             }
 
@@ -207,17 +213,25 @@
                     ctx.translate(LARGURA/2, ALTURA/2)
                     ctx.fillStyle = "#ffffff"
 
+                    if (bloco.score > record) {
+                        ctx.fillText("Novo Record!", -150, -65)
+                    } else if (record < 10){
+                        ctx.fillText("Record " + record, -100, -65)
+                    } else if (record >= 10 && record < 100) {
+                        ctx.fillText("Record " + record, -113, -65)
+                    } else if (record >= 100) {
+                        ctx.fillText("Record " + record, -126, -65)
+                    }
+
                     if (bloco.score < 10) {
                         ctx.fillText(bloco.score, -13, 19)
                     } else if (bloco.score >= 10 && bloco.score < 100) {
                         ctx.fillText(bloco.score, -26, 19)
-                    } else if (bloco.score >= 100 && bloco.score < 1000) {
+                    } else if (bloco.score >= 100) {
                         ctx.fillText(bloco.score, -40, 19)
                     }
 
-
                     ctx.restore()
-
                 } else if (estadoAtual == estados.jogando) {
                     obstaculos.desenha()
                 }
