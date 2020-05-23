@@ -223,42 +223,33 @@
                 ctx.font = "50px Arial"
                 ctx.fillText(bloco.score, 30, 68)
 
-                if (estadoAtual == estados.jogar) {
-                    ctx.fillStyle = "green"
-                    ctx.fillRect(LARGURA /2 -50, ALTURA / 2 -50, 100, 100)
-                } else if (estadoAtual == estados.perdeu) {
-                    ctx.fillStyle = "red"
-                    ctx.fillRect(LARGURA /2 -50, ALTURA / 2 -50, 100, 100)
+                chao.desenha()
+                bloco.desenha()
 
-                    ctx.save()
-                    ctx.translate(LARGURA/2, ALTURA/2)
-                    ctx.fillStyle = "#ffffff"
-
-                    if (bloco.score > record) {
-                        ctx.fillText("Novo Record!", -150, -65)
-                    } else if (record < 10){
-                        ctx.fillText("Record " + record, -100, -65)
-                    } else if (record >= 10 && record < 100) {
-                        ctx.fillText("Record " + record, -113, -65)
-                    } else if (record >= 100) {
-                        ctx.fillText("Record " + record, -126, -65)
-                    }
-
-                    if (bloco.score < 10) {
-                        ctx.fillText(bloco.score, -13, 19)
-                    } else if (bloco.score >= 10 && bloco.score < 100) {
-                        ctx.fillText(bloco.score, -26, 19)
-                    } else if (bloco.score >= 100) {
-                        ctx.fillText(bloco.score, -40, 19)
-                    }
-
-                    ctx.restore()
-                } else if (estadoAtual == estados.jogando) {
+                if (estadoAtual == estados.jogando) {
                     obstaculos.desenha()
                 }
 
-                chao.desenha()
-                bloco.desenha()
+                if (estadoAtual == estados.jogar) {
+                    jogar.desenha(LARGURA / 2 - jogar.largura / 2, ALTURA / 2 - jogar.altura / 2)
+                }
+
+                if (estadoAtual == estados.perdeu) {
+                    perdeu.desenha(LARGURA / 2 - perdeu.largura / 2, ALTURA / 2 - perdeu.altura / 2 - spriteRecord.altura / 2)
+                    spriteRecord.desenha(LARGURA / 2 - spriteRecord.largura / 2, ALTURA / 2 + perdeu.altura / 2 - spriteRecord. altura / 2 - 25)
+                    
+                    ctx.fillStyle = "#ffffff"
+                    ctx.font = "50px Arial"
+                    ctx.fillText(bloco.score, 375, 390)
+
+                    if (bloco.score > record) {
+                        novo.desenha(LARGURA / 2 - 180, ALTURA / 2 + 30)
+                        ctx.fillText(bloco.score, 420, 470)
+
+                    } else {
+                        ctx.fillText(record, 420, 470)
+                    }
+                }
             }
 
             //inicializa o jogo
