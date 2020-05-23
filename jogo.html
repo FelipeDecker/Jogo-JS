@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title> Jogo - Felipe Decker </title>
+        <script src="./sprite.js"></script> 
         <style>
             canvas {
                 position: absolute;
@@ -18,8 +19,8 @@
     <body>
         <script>
             //variaveis do jogo
-            var canvas, ctx, ALTURA, LARGURA, estadoAtual, record
-            var frames = 0, maxPulos = 3, velocidade = 4
+            var canvas, ctx, ALTURA, LARGURA, estadoAtual, record, img
+            var frames = 0, maxPulos = 3, velocidade = 6
 
             estados = {
                 jogar: 0,
@@ -41,10 +42,10 @@
             var bloco = {
                 x: 50,
                 y: 0,
-                altura: 50,
-                largura: 50,
+                altura: boneco.altura,
+                largura: boneco.largura,
                 cor: "#ff9239",
-                gravidade: 1.1,
+                gravidade: 1.6,
                 velocidade: 0,
                 forcaDoPulo: 29,
                 qtdPulos: 0,
@@ -52,7 +53,7 @@
 
                 atualiza: function(){
                     this.velocidade += this.gravidade
-                    this.y += this.velocidade / 2
+                    this.y += this.velocidade / 1.7
 
                     if (this.y > chao.y - this.altura && estadoAtual != estados.perdeu) {
                         this.y = chao.y - this.altura
@@ -81,8 +82,8 @@
                 },
 
                 desenha: function(){
-                    ctx.fillStyle = this.cor
-                    ctx.fillRect(this.x, this.y, this.largura, this.altura)
+                    //ctx.fillStyle = this.cor
+                    boneco.desenha(this.x, this.y)
                 }
             }
 
@@ -99,7 +100,7 @@
                         altura: 30 + Math.floor(121 * Math.random()),
                         cor: this.cores[Math.floor(5 * Math.random())]
                     })
-                    this.tempoInsere = 55 + Math.floor(30 * Math.random())
+                    this.tempoInsere = 40 + Math.floor(25 * Math.random())
                 },
 
                 atualiza: function(){
@@ -175,6 +176,10 @@
                 document.addEventListener("mousedown", clique)
                 estadoAtual = estados.jogar
                 record = localStorage.getItem("record") == null ? 0 : null
+
+                img = new Image()
+                img.src = "img/sheet.png"
+
                 roda()
             }
 
@@ -195,8 +200,7 @@
             }
 
             function desenha(){
-                ctx.fillStyle = "#80daff"
-                ctx.fillRect(0, 0, LARGURA, ALTURA)
+                backGround.desenha(0, 0)
 
                 ctx.fillStyle = "#ffffff"
                 ctx.font = "50px Arial"
