@@ -23,3 +23,13 @@ var novo = new Sprite(68, 721, 287, 93)
 var spriteRecord = new Sprite(28, 879, 441, 95)
 
 var spriteChao = new Sprite(0, 604, 600, 54)
+
+var obstaculoVermelho = new Sprite(662, 867, 50, 120)
+
+var obstaculoRosa = new Sprite(719, 867, 50, 120)
+
+var obstaculoAzul = new Sprite(779, 867, 50, 120)
+
+var obstaculoVerde = new Sprite(839, 867, 50, 120)
+
+var obstaculoAmarelo = new Sprite(898, 867, 50, 120)

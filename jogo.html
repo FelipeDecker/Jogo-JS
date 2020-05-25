@@ -140,16 +140,17 @@
             var obstaculos = {
                 obs: [],
                 scored: false,
-                cores: ["#ffbc1c", "#ff1c1c", "#ff85e1", "#52a7ff", "#78ff5d"],
+                sprites: [obstaculoVermelho, obstaculoRosa, obstaculoAzul, obstaculoVerde, obstaculoAmarelo],
                 tempoInsere: 0,
 
                 insere: function() {
                     this.obs.push({
                         x: LARGURA,
+                        y: chao.y - Math.floor(30 + Math.random() * 90),
                         // largura: 25 + Math.floor(21 * Math.random()),
                         largura: 40,
-                        altura: 30 + Math.floor(121 * Math.random()),
-                        cor: this.cores[Math.floor(5 * Math.random())]
+                        //altura: 30 + Math.floor(121 * Math.random()),
+                        spriteAtual: this.sprites[Math.floor(this.sprites.length * Math.random())]
                     })
                     this.tempoInsere = 40 + Math.floor(25 * Math.random())
                 },
@@ -165,7 +166,7 @@
                         var obsAtual = this.obs[i]     
                         obsAtual.x -= velocidade
                         
-                        if (!bloco.colidindo && bloco.x < obsAtual.x + obsAtual.largura && bloco.x + bloco.largura >= obsAtual.x && bloco.y + bloco.altura >= chao.y - obsAtual.altura){
+                        if (!bloco.colidindo && bloco.x < obsAtual.x + obsAtual.largura && bloco.x + bloco.largura >= obsAtual.x && bloco.y + bloco.altura >= obsAtual.y){
                             bloco.colidindo = true
                             bloco.vidas --
 
@@ -203,8 +204,7 @@
                     for (let i = 0, tam = this.obs.length; i < tam; i++) {
                         var obsAtual = this.obs[i]
 
-                        ctx.fillStyle = obsAtual.cor
-                        ctx.fillRect(obsAtual.x, chao.y - obsAtual.altura, obsAtual.largura, obsAtual.altura)
+                        obsAtual.spriteAtual.desenha(obsAtual.x, obsAtual.y)
                     }
                 }
             }
@@ -293,7 +293,6 @@
                 ctx.fillStyle = "rgba(0,0,0, "+ labelNovaFase.opacidade +")"
                 ctx.fillText(labelNovaFase.texto, canvas.width / 2 - ctx.measureText(labelNovaFase.texto).width / 2, canvas.height / 3)
 
-                chao.desenha()
                 bloco.desenha()
 
                 if (estadoAtual == estados.jogando) {
@@ -320,6 +319,9 @@
                         ctx.fillText(record, 420, 470)
                     }
                 }
+                
+                chao.desenha()
+
             }
 
             //inicializa o jogo
