@@ -20,9 +20,36 @@
         <script>
             //variaveis do jogo
             var canvas, ctx, ALTURA, LARGURA, estadoAtual, record, img
-            var frames = 0, maxPulos = 3, velocidade = 6
+            var frames = 0, maxPulos = 3, velocidade = 6, faseAtual = 0
+            var pontosNovaFase = [5, 20, 35, 40]
 
-            estados = {
+            var labelNovaFase = {
+                texto: "",
+                opacidade: 0.0,
+
+                fadeIn: function(dt){
+                    var fadeInId = setInterval(function(){
+                        if (labelNovaFase.opacidade < 1.0) {
+                            labelNovaFase.opacidade += 0.01
+                        } else {
+                            clearInterval(fadeInId)
+                        }
+                    }, 10 * dt) 
+                },
+
+                fadeOut: function(dt) {
+                    var fadeOutId =  setInterval(function(){
+                        if (labelNovaFase.opacidade > 0.0) {
+                            labelNovaFase.opacidade -= 0.01
+                        } else {
+                            clearInterval(fadeOutId)
+                        }
+                    } , 10 * dt) 
+                }
+            }
+
+
+            var estados = {
                 jogar: 0,
                 jogando: 1,
                 perdeu: 2
@@ -38,7 +65,7 @@
                     this.x -= velocidade
 
                     if (this.x <= -30) {
-                        this.x = 0
+                        this.x += 30
                     }
                 },
 
@@ -84,16 +111,19 @@
                 },
 
                 reset: function(){
-                    this.velocidade = 0
-                    this.y = 0
-                    this.vidas = 3
-
                     if (this.score > record){
                         localStorage.setItem("record", this.score)
                         record = this.score
                     }
 
                     this.score = 0
+                    this.vidas = 3
+                    this.velocidade = 0
+                    this.gravidade = 1.6
+                    this.y = 0
+
+                    velocidade = 6
+                    faseAtual = 0
                 },
 
                 desenha: function(){
@@ -109,6 +139,7 @@
 
             var obstaculos = {
                 obs: [],
+                scored: false,
                 cores: ["#ffbc1c", "#ff1c1c", "#ff85e1", "#52a7ff", "#78ff5d"],
                 tempoInsere: 0,
 
@@ -147,8 +178,13 @@
                             }, 500)
                         }
 
-                        if (obsAtual.x == 0) {
+                        if (obsAtual.x <= 0 && !obsAtual.scored) {
                             bloco.score++
+                            obsAtual.scored = true
+
+                            if (faseAtual < pontosNovaFase.length && bloco.score == pontosNovaFase[faseAtual]) {
+                                proximaFase()
+                            }
                         }
 
                         if(obsAtual.x <=  - obsAtual.largura) {
@@ -184,6 +220,23 @@
                     obstaculos.limpa()
                     bloco.reset()
                 }
+            }
+
+            function proximaFase() {
+                velocidade ++
+                faseAtual ++
+                bloco.vidas ++
+
+                // if (faseAtual == 4) {
+                //     bloco.gravidade = 0.6
+                // }
+
+                labelNovaFase.texto = "Level " + faseAtual
+                labelNovaFase.fadeIn(0.5)
+
+                setTimeout(function(){
+                    labelNovaFase.fadeOut(0.5)
+                }, 1000)
             }
 
             function main(){
@@ -237,6 +290,9 @@
                 ctx.fillText(bloco.score, 30, 68)
                 ctx.fillText(bloco.vidas, 540, 68)
 
+                ctx.fillStyle = "rgba(0,0,0, "+ labelNovaFase.opacidade +")"
+                ctx.fillText(labelNovaFase.texto, canvas.width / 2 - ctx.measureText(labelNovaFase.texto).width / 2, canvas.height / 3)
+
                 chao.desenha()
                 bloco.desenha()
 
@@ -254,13 +310,13 @@
                     
                     ctx.fillStyle = "#ffffff"
                     ctx.font = "50px Arial"
-                    ctx.fillText(bloco.score, 375, 390)
 
                     if (bloco.score > record) {
                         novo.desenha(LARGURA / 2 - 180, ALTURA / 2 + 30)
                         ctx.fillText(bloco.score, 420, 470)
 
                     } else {
+                        ctx.fillText(bloco.score, 375, 390)
                         ctx.fillText(record, 420, 470)
                     }
                 }
