@@ -60,6 +60,9 @@
                 qtdPulos: 0,
                 score: 0,
                 rotacao: 0,
+                vidas: 3,
+                colidindo: false,
+
 
                 atualiza: function(){
                     this.velocidade += this.gravidade
@@ -83,6 +86,7 @@
                 reset: function(){
                     this.velocidade = 0
                     this.y = 0
+                    this.vidas = 3
 
                     if (this.score > record){
                         localStorage.setItem("record", this.score)
@@ -130,8 +134,17 @@
                         var obsAtual = this.obs[i]     
                         obsAtual.x -= velocidade
                         
-                        if(bloco.x < obsAtual.x + obsAtual.largura && bloco.x + bloco.largura >= obsAtual.x && bloco.y + bloco.altura >= chao.y - obsAtual.altura){
-                            estadoAtual = estados.perdeu 
+                        if (!bloco.colidindo && bloco.x < obsAtual.x + obsAtual.largura && bloco.x + bloco.largura >= obsAtual.x && bloco.y + bloco.altura >= chao.y - obsAtual.altura){
+                            bloco.colidindo = true
+                            bloco.vidas --
+
+                            if (bloco.vidas < 1) {
+                                estadoAtual = estados.perdeu 
+                            }
+
+                            setTimeout(function() {
+                                bloco.colidindo = false
+                            }, 500)
                         }
 
                         if (obsAtual.x == 0) {
@@ -222,6 +235,7 @@
                 ctx.fillStyle = "#ffffff"
                 ctx.font = "50px Arial"
                 ctx.fillText(bloco.score, 30, 68)
+                ctx.fillText(bloco.vidas, 540, 68)
 
                 chao.desenha()
                 bloco.desenha()
