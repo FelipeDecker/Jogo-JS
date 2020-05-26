@@ -4,17 +4,7 @@
         <meta charset="utf-8">
         <title> Jogo - Felipe Decker </title>
         <script src="./sprite.js"></script> 
-        <style>
-            canvas {
-                position: absolute;
-                top: 0px;
-                bottom: 0px;
-                left: 0px;
-                right: 0px;
-                margin: auto;
-            }
-
-        </style>
+        <link rel="stylesheet" href="estilo.css">
     </head>
     <body>
         <script>
@@ -251,7 +241,6 @@
                 canvas = document.createElement("canvas")
                 canvas.width = LARGURA
                 canvas.height = ALTURA
-                canvas.style.border = "1px solid #000"
 
                 ctx = canvas.getContext("2d")
                 document.body.appendChild(canvas)
