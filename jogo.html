@@ -10,7 +10,7 @@
         <script>
             //variaveis do jogo
             var canvas, ctx, ALTURA, LARGURA, estadoAtual, record, img
-            var frames = 0, maxPulos = 3, velocidade = 6, faseAtual = 0
+            var maxPulos = 3, velocidade = 6, faseAtual = 0
             var pontosNovaFase = [5, 20, 35, 40]
 
             var labelNovaFase = {
@@ -37,7 +37,6 @@
                     } , 10 * dt) 
                 }
             }
-
 
             var estados = {
                 jogar: 0,
@@ -79,7 +78,6 @@
                 rotacao: 0,
                 vidas: 3,
                 colidindo: false,
-
 
                 atualiza: function(){
                     this.velocidade += this.gravidade
@@ -262,7 +260,6 @@
             }
 
             function atualiza(){
-                frames ++
                 if (estadoAtual == estados.jogando) {                
                     obstaculos.atualiza()
                 }
@@ -310,7 +307,6 @@
                 }
                 
                 chao.desenha()
-
             }
 
             //inicializa o jogo
